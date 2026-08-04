@@ -64,7 +64,7 @@ void readComandLine(char* path){
     if(commandline == NULL) return;
 
     printf("CommandLine: ");
-    int readBytes; char Empty = 1;
+    size_t readBytes; char Empty = 1;
     while( (readBytes = fread(buffer, sizeof(char), 255, commandline) )){
         for(size_t i = 0; i < readBytes; i++){
             Empty = 0;
@@ -84,7 +84,7 @@ void readComandLine(char* path){
 }
 
 void readMemoryMaps(char* path){
-    char* buffer;
+    char* buffer = NULL;
     size_t len = 0;
 
     char lastLib[255] = "";
@@ -97,7 +97,7 @@ void readMemoryMaps(char* path){
         char* libPath = strchr(buffer, '/');
         if(libPath == NULL) continue;
         
-        libPath[strlen(libPath) - 1] = '\0';
+        libPath[strcspn(libPath, "\r\n")] = '\0';
 
         if( strstr(libPath, ".so") != NULL){
             if(strcmp(lastLib, libPath) == 0) continue;
@@ -120,6 +120,7 @@ void readMemoryMaps(char* path){
         }
     }
 
+    free(buffer);
     fclose(memoryFile);
 
 }
@@ -132,7 +133,7 @@ int readProcess(DIR* procDir){
 
             printf("PID: %s \n", entry->d_name);
 
-            char buffer[255];
+            char buffer[270];
             
             snprintf(buffer, sizeof(buffer), "/proc/%s/status", entry->d_name);
             readStatusFile(buffer);                

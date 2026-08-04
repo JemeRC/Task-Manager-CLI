@@ -3,6 +3,7 @@
 # ==============================================================================
 
 COMPILER	= gcc
+FLAGS		= -g -Wall -Wextra
 
 # ==============================================================================
 # DIRECTORIES
@@ -26,9 +27,9 @@ FINAL_FILE = $(BUILD_DIR)/taskManagerCLI
 QuickTest: Generate Run
 
 Generate: 
-	rm -rf $(BUILD_DIR)
-	mkdir $(BUILD_DIR)
-	$(COMPILER) $(MAIN_FILE) -o $(FINAL_FILE)
+	@rm -rf $(BUILD_DIR)
+	@mkdir $(BUILD_DIR)
+	@$(COMPILER) $(FLAGS) $(MAIN_FILE) -o $(FINAL_FILE)
 
 Run:
 	$(FINAL_FILE)
