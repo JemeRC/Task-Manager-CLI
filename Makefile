@@ -3,33 +3,42 @@
 # ==============================================================================
 
 COMPILER	= gcc
-FLAGS		= -g -Wall -Wextra
+FLAGS		= -Wall -Wextra
 
 # ==============================================================================
 # DIRECTORIES
 # ==============================================================================
 
-SOURCE_DIR	= ./src
-BUILD_DIR	= ./build
+SOURCE_DIR	= src
+BUILD_DIR	= build
 
 # ==============================================================================
 # FILES & OBJECTS
 # ==============================================================================
 
-MAIN_FILE = $(SOURCE_DIR)/main.c
+TARGET 	= $(BUILD_DIR)/taskManagerCLI
 
-FINAL_FILE = $(BUILD_DIR)/taskManagerCLI
+SRCS	= $(wildcard $(SOURCE_DIR)/*.c)
+OBJS	= $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 # ==============================================================================
 # COMPILATION
 # ==============================================================================
 
-QuickTest: Generate Run
+.PHONY: all clean run
 
-Generate: 
-	@rm -rf $(BUILD_DIR)
-	@mkdir $(BUILD_DIR)
-	@$(COMPILER) $(FLAGS) $(MAIN_FILE) -o $(FINAL_FILE)
+all: $(TARGET)
 
-Run:
-	$(FINAL_FILE)
+$(TARGET): $(OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(COMPILER) $(FLAGS) $^ -o $@
+
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
+	@mkdir -p $(BUILD_DIR)
+	$(COMPILER) $(FLAGS) -c $< -o $@
+
+run: all
+	./$(TARGET)
+
+clean:
+	rm -rf $(BUILD_DIR)
