@@ -3,8 +3,7 @@
 
 typedef struct{
     char pid[32];
-    
-    int ppid;
+    char ppid[32];
     char user[64];
     
     char name[256];

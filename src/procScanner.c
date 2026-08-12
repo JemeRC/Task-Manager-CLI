@@ -15,7 +15,7 @@ int openProc(DIR** procDir){
     return 0;
 }
 
-int readProcess(DIR* procDir, const int suspiciousOnly){
+int readProcess(DIR* procDir, const char suspiciousOnly, const char* targetUser, enum FORMAT formatStyle, FILE* outStream){
     struct dirent* entry;
     ProcessData data;
 
@@ -39,8 +39,14 @@ int readProcess(DIR* procDir, const int suspiciousOnly){
             snprintf(buffer, sizeof(buffer), "/proc/%s/environ", entry->d_name);
             readEnvironFile(buffer, &data);
 
-            if(!suspiciousOnly || data.isSuspicious || data.isUnknown){
-                printProcessText(&(data));
+            char matchesSuspicious = !suspiciousOnly || data.isSuspicious || data.isUnknown;
+            char matchesUser = (targetUser == NULL) || (strcmp(data.user, targetUser) == 0);
+
+            if(matchesSuspicious && matchesUser){
+                if(formatStyle == FORMAT_TEXT)
+                    printProcessText(outStream, &data);
+                else if(formatStyle == FORMAT_JSON)
+                    printProcessJSON(outStream, &data);
             }
 
             freeProcessData(&data);

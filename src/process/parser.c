@@ -34,7 +34,7 @@ void readStatusFile(const char* path, ProcessData* data){
             }
         }
         else if(strncmp(buffer, "PPid:", 5) == 0){
-            sscanf(buffer+5, "%d", &(data->ppid));
+            sscanf(buffer+5, "%s", data->ppid);
         }
         else if(strncmp(buffer, "VmRSS:", 6) == 0){
             unsigned long long memoryKB = 0;

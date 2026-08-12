@@ -2,24 +2,24 @@
 # BUILD CONFIGURATION
 # ==============================================================================
 
-COMPILER	= gcc
-FLAGS		= -Wall -Wextra -Iinclude -fsanitize=address
+COMPILER    = gcc
+FLAGS       = -Wall -Wextra -Iinclude
 
 # ==============================================================================
 # DIRECTORIES
 # ==============================================================================
 
-SOURCE_DIR	= src
-BUILD_DIR	= build
+SOURCE_DIR  = src
+BUILD_DIR   = build
 
 # ==============================================================================
 # FILES & OBJECTS
 # ==============================================================================
 
-TARGET 	= $(BUILD_DIR)/taskManagerCLI
+TARGET  = $(BUILD_DIR)/taskManagerCLI
 
-SRCS	= $(wildcard $(SOURCE_DIR)/*.c src/**/*.c)
-OBJS	= $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
+SRCS    = $(wildcard $(SOURCE_DIR)/*.c src/**/*.c)
+OBJS    = $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 # ==============================================================================
 # COMPILATION
@@ -27,17 +27,14 @@ OBJS	= $(patsubst $(SOURCE_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
 .PHONY: all clean run
 
-all: makeDir $(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@
 
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
+	@mkdir -p $(dir $@)
 	$(COMPILER) $(FLAGS) -c $< -o $@
-
-makeDir:
-	@mkdir -p $(BUILD_DIR)
-	@mkdir -p $(BUILD_DIR)/process
 
 run: all
 	./$(TARGET)
